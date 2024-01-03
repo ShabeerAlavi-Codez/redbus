@@ -6,8 +6,9 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { MdAccountCircle } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
-
+import axios from 'axios';
 ///import { GoogleLogin } from "react-google-login";
+import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 import { useSelector, useDispatch } from "react-redux";
 import {
   loginSuccess,
@@ -18,10 +19,29 @@ import {
 import ComingSoonModal from "../../Elements/ComingSoonModal";
 import { useHistory } from "react-router-dom";
 const Navbar = () => {
+  //const { OAuth2Client } = require('google-auth-library');
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorEl2, setAnchorEl2] = React.useState(null);
   const [isModelOpen, setIsModelOpen] = React.useState(false);
   const dispatch = useDispatch();
+  const [ user, setUser ] = React.useState([]);
+  const [ profile, setProfile ] = React.useState([]);
+  const login = useGoogleLogin({
+      onSuccess: (codeResponse) => {
+        axios
+      .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${codeResponse.access_token}`, {
+          headers: {
+              Authorization: `Bearer ${codeResponse.access_token}`,
+              Accept: 'application/json'
+          }
+      })
+      .then((res) => {
+           dispatch(loginSuccess(res.data));
+          dispatch(addCustomerMongo(res.data ));
+      })
+      },
+      onError: (error) => console.log('Login Failed:', error)
+  });
   const isLoggedIn = useSelector((state) => state.authReducer.isLoggedIn);
   const currentCustomer = useSelector(
     (state) => state.authReducer.currentCustomer
@@ -45,6 +65,21 @@ const Navbar = () => {
     setIsOpen(true);
     setAnchorEl(null);
   };
+  
+async function verify(client_id, jwtToken) {
+  //const client = new OAuth2Client(client_id);
+  // Call the verifyIdToken to
+  // varify and decode it
+  // const ticket = await client.verifyIdToken({
+  //     idToken: jwtToken,
+  //     audience: client_id,
+  // });
+  // Get the JSON with all the user info
+  //const payload = ticket.getPayload();
+  // This is a JSON object that contains
+  // all the user info
+ // return payload;
+}
 
   const handleClose2 = () => {
     setAnchorEl2(null);
@@ -162,26 +197,37 @@ const Navbar = () => {
                   onClose={handleClose2}
                 >
                   <MenuItem onClick={handleClose2}>
-                    < GoogleLogin
+                  <button onClick={() => login()}>Sign in with Google 🚀 </button>
+                    {/* < GoogleLogin
                      // clientId="338803464375-n2h6tvo0svapakc335g6mqar5u4a90ru.apps.googleusercontent.com"
                       scope= "profile,email"
-                      onSuccess={(response) => {
-      //                   const response = await provider.authorize();
+                      onSuccess={async (response) => {
+              // const resp = await verify("338803464375-n2h6tvo0svapakc335g6mqar5u4a90ru.apps.googleusercontent.com",response.credential);
       //    const email = response.profileObj.email;
       // const name = response.profileObj.name;
+
+      axios
+      .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${response.credential}`, {
+          headers: {
+              Authorization: `Bearer ${response.credential}`,
+              Accept: 'application/json'
+          }
+      })
+      .then((res) => {
+          alert(JSON.stringify(res.data));
+           dispatch(loginSuccess(res.data));
+          dispatch(addCustomerMongo(res.data ));
+      })
                         
-                        alert( JSON.stringify(response))
-                        console.log(
-                          "---------------------------CALLED-------------------------------",response
-                        );
-                        dispatch(loginSuccess(response));
+                       
+                       // dispatch(loginSuccess(resp));
                        // dispatch(addCustomerMongo(response.profileObj));
                       }}
                       onFailure={(response) => {
                         dispatch(loginFailure(response));
                       }}
                       cookiePolicy={"single_host_origin"}
-                    />
+                    /> */}
                   </MenuItem>
                 </Menu>
               )}

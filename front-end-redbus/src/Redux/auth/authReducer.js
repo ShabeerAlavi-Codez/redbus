@@ -14,9 +14,9 @@ const authReducer = (state = initState, action) => {
         isLoggedIn: true,
         currentCustomer: {
           name: action.payload.name,
-          googleId: action.payload.googleId,
+          googleId: action.payload.id,
           email: action.payload.email,
-          profilePicture: action.payload.imageUrl,
+          profilePicture: action.payload.picture,
         },
         error: false,
       };

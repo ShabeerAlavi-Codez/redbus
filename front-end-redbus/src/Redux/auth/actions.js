@@ -1,10 +1,9 @@
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
 const loginSuccess = (response) => {
-  console.log(";;;;",response)
   return {
     type: actionTypes.LOGIN_SUCCESS,
-    payload: response.profileObj,
+    payload: response,
   };
 };
 
@@ -45,8 +44,8 @@ const addCustomerMongo = (profileObj) => {
       let customer = {
         name: profileObj.name,
         email: profileObj.email,
-        googleId: profileObj.googleId,
-        profilePicture: profileObj.imageUrl,
+        googleId: profileObj.id,
+        profilePicture: profileObj.picture,
       };
       const res = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/v1/api/customers`,
