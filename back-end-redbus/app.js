@@ -56,9 +56,10 @@ const connect = () => {
     "mongodb+srv://redbus_db_user_1:umJkhSujb8dZoc2a@redbuscnstructweek.bujg6.mongodb.net/redbus?retryWrites=true&w=majority",
     {
       useCreateIndex: true,
-      useNewUrlParser: true,
       useUnifiedTopology: true,
+      useNewUrlParser: true,
       useFindAndModify: false,
+      dbName: "redbus", // Specify the database name
     }
   );
 };

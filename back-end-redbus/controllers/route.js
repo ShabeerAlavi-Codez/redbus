@@ -24,7 +24,7 @@ exports.getOneRoute = async (req, res) => {
   // get all buses for that route
   let buses = await Bus.find();
   let matchedBuses = buses.filter((bus) => {
-    // console.log(bus.routes, route._id, typeof route._id);
+    console.log(routes,";;;",route);
     return bus.routes.toString() === route._id.toString();
   });
 
